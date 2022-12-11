@@ -1,0 +1,95 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 28105,
+    "appName": "JStudio",
+    "appType": "app",
+    "version": {
+      "code": 1,
+      "name": "1.0.1"
+    },
+    "icon": "icon.png",
+    "vender": "JWH",
+    "description": "JStudio"
+  },
+  "permissions": [],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "1.0.0",
+      "target": "1.0.1",
+      "minVersion": "1.0.0"
+    }
+  },
+  "targets": {
+    "smart-band-7": {
+      "module": {
+        "page": {
+          "pages": [
+            "page/index"
+          ]
+        }
+      },
+      "platforms": [
+        {
+          "name": "smart-band-7",
+          "deviceSource": 260
+        },
+        {
+          "name": "smart-band-7",
+          "deviceSource": 261
+        },
+        {
+          "name": "smart-band-7",
+          "deviceSource": 262
+        },
+        {
+          "name": "smart-band-7",
+          "deviceSource": 263
+        },
+        {
+          "name": "smart-band-7",
+          "deviceSource": 264
+        },
+        {
+          "name": "smart-band-7",
+          "deviceSource": 265
+        },
+        {
+          "name": "smart-band-7",
+          "deviceSource": 266
+        }
+      ],
+      "designWidth": 192
+    },
+    "gtr-3-pro": {
+      "module": {
+        "page": {
+          "pages": [
+            "page/index"
+          ]
+        }
+      },
+      "platforms": [
+        {
+          "name": "gtr3-pro",
+          "deviceSource": 229
+        },
+        {
+          "name": "gtr3-pro-w",
+          "deviceSource": 230
+        },
+        {
+          "name": "gtr3-pro-meilin",
+          "deviceSource": 6095106
+        }
+      ],
+      "designWidth": 480
+    }
+  },
+  "i18n": {
+    "zh-CN": {
+      "appName": "JStudio"
+    }
+  },
+  "defaultLanguage": "zh-CN"
+}
