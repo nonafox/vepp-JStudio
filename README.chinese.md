@@ -1,3 +1,7 @@
+# 多语言
+- [English](https://github.com/jwhgzs/vepp-jstudio/blob/master/README.md)
+- 中文（当前）
+
 # 使用说明
 
 如你所见，JStudio的界面是非常直观的——显示器+键盘。显示器有两个模式，分别用来显示代码和输出。你可以点击显示器以切换模式。

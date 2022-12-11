@@ -1,3 +1,7 @@
+# Languages
+- English (current)
+- [Chinese](https://github.com/jwhgzs/vepp-jstudio/blob/master/README.chinese.md)
+
 # Way to use
 
 It's pretty easy to use! As you see, there is a displayer on top and a keyboard on bottom.
