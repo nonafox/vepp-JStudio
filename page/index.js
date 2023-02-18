@@ -101,7 +101,7 @@ Page({
                     '0 1 2 3 4 5 6 7 8 9 . OP'.split(' '),
                     '+ - * / % > < = & | BS `'.split(' '),
                     '? : ! ~ ^ $ _ @ # LU CN NL'.split(' '),
-                    'EC CE RO OK WP JL JR SV SY GO NL'.split(' ')
+                    'EC CE RO OK WP JL JR SV SY GO NL NL'.split(' ')
                 ],
                 dict: {
                     'WS': ' ',
