@@ -150,7 +150,7 @@ Page({
                 stringifyDataSimply(data, long = false, echoFunc = false) {
                     const simpleTypes = ['bigint', 'boolean', 'number', 'string', 'undefined']
                     let type = typeof data
-                    let rawString = data.toString()
+                    let rawString = data ? data.toString() : 'null'
                     if (! long)
                         rawString = rawString.length >= longStringLength
                             ? rawString.substring(0, longStringLength) + '...' : rawString
@@ -158,7 +158,10 @@ Page({
                         .replace('\\', '\\\\')
                         .replace('\n', '\\n')
                         .replace('`', '\\`')
-                    if (simpleTypes.indexOf(type) >= 0) {
+                    if (data == null) {
+                        return 'null'
+                    }
+                    else if (simpleTypes.indexOf(type) >= 0) {
                         return type == 'string' ? `\`${quotedString}\`` : `${rawString}`
                     } else {
                         if (! echoFunc && type == 'function')
