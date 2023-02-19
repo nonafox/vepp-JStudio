@@ -50,7 +50,7 @@ Here is the list of them:
 # Built-in APIs
 There is the list of built-in APIs in the JStudio runtime environment:
 
-- `echo(data, flags = echoOps.W)`: display the data on the displayer (values of enum `echoOps`: `W` (stands for 'add Wrap'), `P` (stands for 'with Prototype'), `L` (stands for 'support Long string'))
+- `echo(data, flags = echoOps.W)`: display the data on the displayer (values of enum `echoOps`: `W` (stands for 'add Wrap'), `P` (stands for 'with Prototype'), `L` (stands for 'support Long strings'), `F` (stands for 'support Functions'))
 - `clearEcho()`: clear the displayer
 - `input((data) => { ... })`: accept the data which user inputs
 - `cn(pinyin)`: query the pinyin table according to the specific pinyin

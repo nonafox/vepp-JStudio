@@ -6,20 +6,20 @@ Page({
     build() {
         const W = hmSetting.getDeviceInfo().width,
               H = hmSetting.getDeviceInfo().height
-        const defaultCode = `echo()`,
+        const defaultCode = `echo(new Date,echoOps.W|echoOps.P)`,
               defaultPointerChar = '┃',
               blockPointerChar = '    ',
               displayerHeight = H * 0.5,
               posY = displayerHeight * 0.5,
               textSize = 18,
               lineWidth = W * 0.9,
-              JLength = 10,
-              longStringLength = 216
+              JLength = 15,
+              longStringLength = 50
         let t
         const tt = { data: t } = new Vepp({
             ui: `
                 #STROKE_RECT y: H * 0.1, h: H * 0.5, line_width: 3, radius: 0, color: displayPage ? 0xc9bdff : 0x49406d
-                #TEXT        x: W * 0.05, y: H * 0.1 + (displayPage ? YPos2 : YPos), w: ${lineWidth}, h: ${displayerHeight} - (displayPage ? YPos2 : YPos), text_size: ${textSize}, text: renderDisplay(), text_style: hmUI.text_style.WRAP, color: 0xc9bdff, align_h: hmUI.align.LEFT, align_v: hmUI.align.TOP, '@click_up': () => displayPage = ! displayPage
+                #TEXT        x: W * 0.05, y: H * 0.1 + (displayPage ? YPos2 : YPos), w: ${lineWidth}, h: ${displayerHeight} - (displayPage ? YPos2 : YPos), text_size: ${textSize}, text_style: hmUI.text_style.WRAP, color: 0xc9bdff, text: renderDisplay(), align_h: hmUI.align.LEFT, align_v: hmUI.align.TOP, '@click_up': () => displayPage = ! displayPage
                 #BUTTON      x: 0, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: a, click_func: () => inputKey(a)
                 #BUTTON      x: W * 0.2, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: b, click_func: () => inputKey(b)
                 #BUTTON      x: W * 0.4, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: c, click_func: () => inputKey(c)
@@ -60,7 +60,7 @@ Page({
                           yposId = this.displayPage ? 'YPos2' : 'YPos'
 
                     let arr = this[outputId].split('')
-                    let { height } = hmUI.getTextLayout(this[outputId].substring(0, this[pointerId] - 1), {
+                    let { height } = hmUI.getTextLayout(this[outputId].substring(0, this[pointerId]), {
                         text_size: textSize,
                         text_width: lineWidth,
                         wrapped: 1
@@ -72,6 +72,7 @@ Page({
                         this[yposId] = 0
                     arr.splice(this[pointerId], 0, this.pointerChar)
                     arr = arr.join('')
+
                     return arr
                 },
                 keysPage: 0,
@@ -81,8 +82,8 @@ Page({
                     'c v ( ) [ ] { } , ; CQ SQ'.split(' '),
                     '0 1 2 3 4 5 6 7 8 9 . OP'.split(' '),
                     '+ - * / % > < = & | BS `'.split(' '),
-                    '? : ! ~ ^ $ _ @ # LU CN NL'.split(' '),
-                    'EC EO CE C2 JL JR WP B2 SV SY GO NL'.split(' ')
+                    'NL ? : ! ~ ^ $ _ @ # LU CN'.split(' '),
+                    'NL EC EO CE C2 JL JR WP B2 SV SY GO'.split(' ')
                 ],
                 dict: {
                     'WS': ' ',
@@ -134,72 +135,89 @@ Page({
                         this[v] = keys[k]
                     }
                 },
-                stringifyDataSimply(data, long = false) {
+                abbrType(type) {
+                    return {
+                        'bigint': 'Bg',
+                        'boolean': 'Bl',
+                        'number': 'Nm',
+                        'string': 'St',
+                        'undefined': 'Un',
+                        'function': 'Fn',
+                        'symbol': 'Sy',
+                        'object': 'Ob'
+                    }[type]
+                },
+                stringifyDataSimply(data, long = false, echoFunc = false) {
                     const simpleTypes = ['bigint', 'boolean', 'number', 'string', 'undefined']
                     let type = typeof data
                     let rawString = data.toString()
                     if (! long)
                         rawString = rawString.length >= longStringLength
-                            ? rawString.substring(0, longStringLength - 1) + '...' : rawString
+                            ? rawString.substring(0, longStringLength) + '...' : rawString
                     let quotedString = rawString
                         .replace('\\', '\\\\')
                         .replace('\n', '\\n')
                         .replace('`', '\\`')
-                    if (simpleTypes.indexOf(type) >= 0)
-                        return type == 'string' ? `\`${quotedString}\`` : `${rawString}`;
-                    else
-                        return `/*${type}*/ ${rawString}`;
+                    if (simpleTypes.indexOf(type) >= 0) {
+                        return type == 'string' ? `\`${quotedString}\`` : `${rawString}`
+                    } else {
+                        if (! echoFunc && type == 'function')
+                            rawString = ''
+                        return `/*${this.abbrType(type)}*/ ${rawString}`;
+                    }
                 },
-                stringifyData(data, withPrototype = false, long = false) {
+                stringifyData(data, withPrototype = false, long = false, echoFunc = false) {
                     let type = typeof data
                     if (type == 'object') {
                         if (data == null)
-                            return this.stringifyDataSimply(data, long)
+                            return this.stringifyDataSimply(data, long, echoFunc)
 
                         let ret = ''
                         let isArray = Array.isArray(data)
-                        ret += isArray ? '[' : '{'
+                        ret += isArray ? '[\n' : '{\n'
                         
-                        let doit = (o, k, v, isPrototype = false) => {
-                            let v = o[k]
-                            let prefix = isPrototype ? `/*prototype*/ ` : ''
-                            k = this.stringifyDataSimply(k, long)
-                            v = this.stringifyData(v, withPrototype, long)
-                            ret += prefix + `${k}: ${v},`
+                        let doit = (k, v, isPrototype = false) => {
+                            let prefix = isPrototype ? '/*P*/ ' : ''
+                            k = this.stringifyDataSimply(k, long, echoFunc)
+                            v = this.stringifyData(v, withPrototype, long, echoFunc)
+                            ret += prefix + `${k}: ${v},\n`
                         }
                         if (withPrototype && data.__proto__) {
-                            Reflect.ownKeys(data.__proto__).forEach((v, i) => doit(data, i, v, true))
+                            Reflect.ownKeys(data.__proto__).forEach(k => doit(k, data.__proto__[k], true))
                         }
-                        Reflect.ownKeys(data).forEach((v, i) => doit(data, i, v))
-                        ret = ret.substring(0, ret.length - 1 - 1)
+                        Reflect.ownKeys(data).forEach(k => doit(k, data[k]))
+                        ret = ret.replace(/,\n$/, '')
 
-                        ret += isArray ? ']' : '}'
+                        ret += isArray ? '\n]' : '\n}'
                         return ret
                     } else {
-                        return this.stringifyDataSimply(data, long)
+                        return this.stringifyDataSimply(data, long, echoFunc)
                     }
                 },
                 echoOps: {
                     W: 1 << 1,
                     P: 1 << 2,
-                    L: 1 << 3
+                    L: 1 << 3,
+                    F: 1 << 4
                 },
-                echo(data, op = this.echoOps.W) {
-                    let wrap = op & this.echoOps.W,
-                        withPrototype = op & this.echoOps.P
-                        long = op & this.echoOps.L
-                    this.output += this.stringifyData(data, withPrototype, long) + (wrap ? '\n' : '')
+                echo(data, flags = this.echoOps.W) {
+                    let wrap = flags & this.echoOps.W,
+                        withPrototype = flags & this.echoOps.P,
+                        long = flags & this.echoOps.L,
+                        echoFunc = flags & this.echoOps.F
                     this.displayPage = 1
+                    this.output += this.stringifyData(data, withPrototype, long, echoFunc) + (wrap ? '\n' : '')
                     this.pointer2 = this.output.length
                 },
                 clearEcho() {
-                    this.output = ''
                     this.displayPage = 1
+                    this.output = ''
                     this.pointer2 = 0
-                    if (inputPos >= 0)
-                        inputPos = 0
+                    if (this.inputPos >= 0)
+                        this.inputPos = 0
                 },
                 input(callback = (data) => {}) {
+                    this.displayPage = ! this.displayPage
                     this.inputPos = this.output.length;
                     let tmp = () => {
                         tt.unwatch('inputOK', tmp)
@@ -207,7 +225,6 @@ Page({
                         t.inputOK = null
                     }
                     tt.watch('inputOK', tmp)
-                    this.displayPage = ! this.displayPage
                     this.pointer2 = this.inputPos
                 },
                 cn(py) {
@@ -271,7 +288,7 @@ Page({
                         this[outputId] = arr.join('')
                         this[pointerId] += c.length
                         if (this.inputPos >= 0 && c.indexOf('\n') >= 0) {
-                            this.inputOK = this[outputId].substring(this.inputPos, this[outputId].length - 1 - 1)
+                            this.inputOK = this[outputId].substring(this.inputPos, this[outputId].length - 1)
                             this.inputPos = -1
                         }
                     } else if (c === d.BP) {

@@ -46,7 +46,7 @@ JStudio中有很多特殊键，都分布在键盘的各个页面上。这有所�
 # 内置API
 这是JStudio运行时环境中内置的API列表：
 
-- `echo(data, flags = echoOps.W)`: 输出数据（枚举`echoOps`的值列表：`W`（输出后换行）, `P`（输出对象原型成员）, `L`（输出长文本））
+- `echo(data, flags = echoOps.W)`: 输出数据（枚举`echoOps`的值列表：`W`（输出后换行）, `P`（输出对象原型成员）, `L`（输出长文本）, `F`（输出函数内容））
 - `clearEcho()`: 清除输出区
 - `input((data) => { ... })`: 接受用户输入
 - `cn(pinyin)`: 从拼音表，根据给定拼音查询汉字序号表
