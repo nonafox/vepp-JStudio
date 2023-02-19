@@ -6,7 +6,7 @@ Page({
     build() {
         const W = hmSetting.getDeviceInfo().width,
               H = hmSetting.getDeviceInfo().height
-        const defaultCode = `echo(new Date,echoOps.W|echoOps.P)`,
+        const defaultCode = `echo()`,
               defaultPointerChar = '┃',
               blockPointerChar = '    ',
               displayerHeight = H * 0.5,
