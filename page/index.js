@@ -4,37 +4,40 @@ import pinyin from './pinyin.js'
 
 Page({
     build() {
-        const standardCode = `echo('hello, world')`,
-              defaultCode = `.tan3`,
+        const W = hmSetting.getDeviceInfo().width,
+              H = hmSetting.getDeviceInfo().height
+        const defaultCode = `echo()`,
               defaultPointerChar = '┃',
               blockPointerChar = '    ',
-              totalLines = 8,
-              PJLength = 10,
-              posW = Math.floor(standardCode.length / 3),
-              posH = 7 - 1
+              displayerHeight = H * 0.5,
+              posY = displayerHeight * 0.5,
+              textSize = 18,
+              lineWidth = W * 0.9,
+              JLength = 10
         let t
         const tt = { data: t } = new Vepp({
             ui: `
-                #STROKE_RECT y: H * 0.1, h: H * 0.5, line_width: 3, radius: 20, color: displayPage ? 0xc9bdff : 0x49406d
-                #TEXT        x: W * 0.05, y: H * 0.1, w: W * 0.9, h: H * 0.5, text: displayPage ? renderDisplay(output, pointer2) : renderDisplay(code, pointer), text_style: hmUI.text_style.ELLIPSIS, color: 0xc9bdff, align_h: hmUI.align.LEFT, align_v: hmUI.align.TOP, '@click_up': () => displayPage = ! displayPage
-                #BUTTON      x: 0, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: a, click_func: () => inputKey(a)
-                #BUTTON      x: W * 0.2, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: b, click_func: () => inputKey(b)
-                #BUTTON      x: W * 0.4, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: c, click_func: () => inputKey(c)
-                #BUTTON      x: W * 0.6, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: d, click_func: () => inputKey(d)
-                #BUTTON      x: W * 0.8, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: e, click_func: () => inputKey(e)
-                #BUTTON      x: 0, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: f, click_func: () => inputKey(f)
-                #BUTTON      x: W * 0.2, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: g, click_func: () => inputKey(g)
-                #BUTTON      x: W * 0.4, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: h, click_func: () => inputKey(h)
-                #BUTTON      x: W * 0.6, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: i, click_func: () => inputKey(i)
-                #BUTTON      x: W * 0.8, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: j, click_func: () => inputKey(j)
-                #BUTTON      x: 0, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: k, click_func: () => inputKey(k)
-                #BUTTON      x: W * 0.2, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: l, click_func: () => inputKey(l)
-                #BUTTON      x: W * 0.4, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: 'WS', click_func: () => inputKey('WS')
-                #BUTTON      x: W * 0.6, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: 'PP', click_func: () => switchKeys({ val: 0 })
-                #BUTTON      x: W * 0.8, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: 'NP', click_func: () => switchKeys({ val: 1 })
-                #BUTTON      x: W * 0.2, y: H * 0.9, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: 'PL', click_func: () => inputKey('PL')
-                #BUTTON      x: W * 0.4, y: H * 0.9, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: 'PR', click_func: () => inputKey('PR')
-                #BUTTON      x: W * 0.6, y: H * 0.9, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 12, text: 'BP', click_func: () => inputKey('BP')
+                #STROKE_RECT y: H * 0.1, h: H * 0.5, line_width: 3, radius: 0, color: displayPage ? 0xc9bdff : 0x49406d
+                #TEXT        x: W * 0.05, y: H * 0.1 + (displayPage ? YPos2 : YPos), w: ${lineWidth}, h: ${displayerHeight} - (displayPage ? YPos2 : YPos), text_size: ${textSize}, text: renderDisplay(), text_style: hmUI.text_style.WRAP, color: 0xc9bdff, align_h: hmUI.align.LEFT, align_v: hmUI.align.TOP, '@click_up': () => displayPage = ! displayPage
+                #BUTTON      x: 0, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: a, click_func: () => inputKey(a)
+                #BUTTON      x: W * 0.2, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: b, click_func: () => inputKey(b)
+                #BUTTON      x: W * 0.4, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: c, click_func: () => inputKey(c)
+                #BUTTON      x: W * 0.6, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: d, click_func: () => inputKey(d)
+                #BUTTON      x: W * 0.8, y: H * 0.6, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: e, click_func: () => inputKey(e)
+                #BUTTON      x: 0, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: f, click_func: () => inputKey(f)
+                #BUTTON      x: W * 0.2, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: g, click_func: () => inputKey(g)
+                #BUTTON      x: W * 0.4, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: h, click_func: () => inputKey(h)
+                #BUTTON      x: W * 0.6, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: i, click_func: () => inputKey(i)
+                #BUTTON      x: W * 0.8, y: H * 0.7, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: j, click_func: () => inputKey(j)
+                #BUTTON      x: 0, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: k, click_func: () => inputKey(k)
+                #BUTTON      x: W * 0.2, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: l, click_func: () => inputKey(l)
+                #BUTTON      x: W * 0.4, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: 'WS', click_func: () => inputKey('WS')
+                #BUTTON      x: W * 0.6, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: 'PP', click_func: () => switchKeys({ val: 0 })
+                #BUTTON      x: W * 0.8, y: H * 0.8, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: 'NP', click_func: () => switchKeys({ val: 1 })
+                #BUTTON      x: W * 0.2, y: H * 0.9, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: 'PL', click_func: () => inputKey('PL')
+                #BUTTON      x: W * 0.4, y: H * 0.9, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: 'PR', click_func: () => inputKey('PR')
+                #BUTTON      x: W * 0.6, y: H * 0.9, w: W * 0.2, h: H * 0.1, color: 0x49406d, normal_color: 0xc9bdff, press_color: 0xeae5ff, radius: 0, text: 'BP', click_func: () => inputKey('BP')
+                #FILL_RECT   x: 0, y: 0, w: W, h: H * 0.1, color: 0x000000
             `,
             data: {
                 pinyin: pinyin,
@@ -43,55 +46,32 @@ Page({
                 displayPage: 0,
                 code: defaultCode,
                 pointer: defaultCode.length,
+                YPos: 0,
                 pointer2: 0,
+                YPos2: 0,
                 pointerChar: defaultPointerChar,
                 output: '',
                 inputPos: -1,
                 inputOK: null,
-                renderDisplay(text, pointer) {
-                    let arr = text.split('')
-                    arr.splice(pointer, 0, this.pointerChar)
+                renderDisplay() {
+                    const outputId = this.displayPage ? 'output' : 'code',
+                          pointerId = this.displayPage ? 'pointer2' : 'pointer',
+                          yposId = this.displayPage ? 'YPos2' : 'YPos'
+
+                    let arr = this[outputId].split('')
+                    let { height } = hmUI.getTextLayout(this[outputId].substring(0, this[pointerId] - 1), {
+                        text_size: textSize,
+                        text_width: lineWidth,
+                        wrapped: 1
+                    })
+                    let diff = height - posY
+                    if (diff >= 0)
+                        this[yposId] = - diff
+                    else
+                        this[yposId] = 0
+                    arr.splice(this[pointerId], 0, this.pointerChar)
                     arr = arr.join('')
-
-                    arr = arr.split('\n')
-                    let y = this.calcYPointer(text, pointer)
-                    arr = arr.slice(y, y + totalLines + 1 - 1)
-                    let pointer2 = this.calcXPointer(text, pointer)
-                    for (let k in arr) {
-                        let v = arr[k]
-                        v = v.substring(pointer2)
-                        arr[k] = v
-                    }
-                    arr = arr.join('\n')
-
                     return arr
-                },
-                calcRPointer(text, pointer, returnType = 0) {
-                    let arr = text.split('\n'),
-                        ppos = pointer
-                    let n = 0
-                    for (let k in arr) {
-                        let v = arr[k]
-                        if (n <= ppos && n + v.length >= ppos) {
-                            return returnType ? parseInt(k) : ppos - n
-                        }
-                        n += v.length + 1
-                    }
-                    return 0
-                },
-                calcXPointer(text, pointer) {
-                    let pos = 0, spos = posW
-                    let rpos = this.calcRPointer(text, pointer)
-                    if (rpos >= spos)
-                        pos = rpos - spos
-                    return pos
-                },
-                calcYPointer(text, pointer) {
-                    let pos = 0, spos = posH
-                    let rpos = this.calcRPointer(text, pointer, 1)
-                    if (rpos >= spos)
-                        pos = rpos - spos
-                    return pos
                 },
                 keysPage: 0,
                 keys: [
@@ -101,7 +81,7 @@ Page({
                     '0 1 2 3 4 5 6 7 8 9 . OP'.split(' '),
                     '+ - * / % > < = & | BS `'.split(' '),
                     '? : ! ~ ^ $ _ @ # LU CN NL'.split(' '),
-                    'EC CE RO OK WP JL JR SV SY GO NL NL'.split(' ')
+                    'EC CE C2 RO OK JL JR WP B2 SV SY GO'.split(' ')
                 ],
                 dict: {
                     'WS': ' ',
@@ -113,56 +93,20 @@ Page({
                     'LU': false,
                     'NL': 0,
                     'GO': undefined,
-                    'SV': 723,
+                    'SV': 2020,
                     'SY': 11,
                     'PL': 32,
-                    'PR': 3,
-                    'JL': 6,
-                    'JR': 7,
-                    'CN': 1949,
+                    'PR': 7,
+                    'JL': 24,
+                    'JR': 26,
+                    'CN': 53,
+                    'OP': 1921,
+                    'C2': 1949,
+                    'B2': 2023,
                     'RO': 'Reflect.ownKeys()',
                     'OK': 'Object.keys()',
                     'EC': 'echo()',
                     'CE': 'clearEcho()'
-                },
-                charRWidths: {
-                    null: 4 / 4,
-                    'w': 4 / 3,
-                    'r': 4 / 6,
-                    't': 4 / 5,
-                    'f': 4 / 5,
-                    'y': 4 / 5,
-                    'i': 4 / 8,
-                    'j': 4 / 10,
-                    'l': 4 / 8,
-                    'm': 4 / 2.5,
-                    'v': 4 / 3.5,
-                    '"': 4 / 6,
-                    "'": 4 / 10,
-                    '-': 4 / 6,
-                    '*': 4 / 5,
-                    '/': 4 / 5,
-                    '%': 4 / 3,
-                    '[': 4 / 7,
-                    ']': 4 / 7,
-                    '&': 4 / 3.5,
-                    '|': 4 / 8,
-                    '\\': 4 / 5,
-                    '`': 4 / 7,
-                    '?': 4 / 4.5,
-                    ':': 4 / 10,
-                    ';': 4 / 10,
-                    ',': 4 / 10,
-                    '(': 4 / 6,
-                    ')': 4 / 6,
-                    '.': 4 / 8,
-                    '~': 4 / 3,
-                    '{': 4 / 6,
-                    '}': 4 / 6,
-                    '#': 4 / 3,
-                    '^': 4 / 5,
-                    '!': 4 / 10,
-                    ' ': 4 / 6
                 },
                 a: '', b: '', c: '', d: '', e: '', f: '',
                 g: '', h: '', i: '', j: '', k: '', l: '',
@@ -204,6 +148,8 @@ Page({
                     this.output = ''
                     this.displayPage = 1
                     this.pointer2 = 0
+                    if (inputPos >= 0)
+                        inputPos = 0
                 },
                 input(callback = (data) => {}) {
                     this.inputPos = this.output.length;
@@ -310,13 +256,13 @@ Page({
                         if (this[pointerId] < this[outputId].length)
                             this[pointerId] ++
                     } else if (c === d.JL) {
-                        if (this[pointerId] - PJLength >= llimit)
-                            this[pointerId] -= PJLength
+                        if (this[pointerId] - JLength >= llimit)
+                            this[pointerId] -= JLength
                         else
                             this[pointerId] = llimit
                     } else if (c === d.JR) {
-                        if (this[pointerId] + PJLength <= this[outputId].length)
-                            this[pointerId] += PJLength
+                        if (this[pointerId] + JLength <= this[outputId].length)
+                            this[pointerId] += JLength
                         else
                             this[pointerId] = this[outputId].length
                     } else if (c === d.CN) {
@@ -341,6 +287,33 @@ Page({
                                 }
                             }
                         }
+                    } else if (c === d.OP) {
+                        const ops = ['+', '-', '*', '/', '(', ')', '%']
+                        let arr = this[outputId].split('')
+                        if ((this[pointerId] - 1) in arr && this[pointerId] - 1 >= llimit) {
+                            let c = arr[this[pointerId] - 1]
+                            let id = ops.indexOf(c)
+                            if (id >= 0) {
+                                c = ops[(id + 1) % ops.length]
+                            } else {
+                                c = ops[0]
+                            }
+                            if (id < 0) {
+                                arr.splice(this[pointerId], 0, c)
+                                this[pointerId] += 1
+                            } else {
+                                arr[this[pointerId] - 1] = c
+                            }
+                            this[outputId] = arr.join('')
+                        }
+                    } else if (c === d.C2) {
+                        this.clearEcho()
+                    } else if (c === d.B2) {
+                        let count = Math.min(this[pointerId], JLength)
+                        let arr = this[outputId].split('')
+                        arr.splice(this[pointerId] - count, count)
+                        this[outputId] = arr.join('')
+                        this[pointerId] -= count
                     }
                 },
                 go() {
