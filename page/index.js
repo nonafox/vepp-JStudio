@@ -13,7 +13,8 @@ Page({
               posY = displayerHeight * 0.5,
               textSize = 18,
               lineWidth = W * 0.9,
-              JLength = 10
+              JLength = 10,
+              longStringLength = 216
         let t
         const tt = { data: t } = new Vepp({
             ui: `
@@ -81,7 +82,7 @@ Page({
                     '0 1 2 3 4 5 6 7 8 9 . OP'.split(' '),
                     '+ - * / % > < = & | BS `'.split(' '),
                     '? : ! ~ ^ $ _ @ # LU CN NL'.split(' '),
-                    'EC CE C2 RO OK JL JR WP B2 SV SY GO'.split(' ')
+                    'EC EO CE C2 JL JR WP B2 SV SY GO NL'.split(' ')
                 ],
                 dict: {
                     'WS': ' ',
@@ -103,9 +104,8 @@ Page({
                     'OP': 1921,
                     'C2': 1949,
                     'B2': 2023,
-                    'RO': 'Reflect.ownKeys()',
-                    'OK': 'Object.keys()',
                     'EC': 'echo()',
+                    'EO': 'echoOps.',
                     'CE': 'clearEcho()'
                 },
                 a: '', b: '', c: '', d: '', e: '', f: '',
@@ -134,13 +134,61 @@ Page({
                         this[v] = keys[k]
                     }
                 },
-                echo(data) {
-                    this.output += data + '\n'
-                    this.displayPage = 1
-                    this.pointer2 = this.output.length
+                stringifyDataSimply(data, long = false) {
+                    const simpleTypes = ['bigint', 'boolean', 'number', 'string', 'undefined']
+                    let type = typeof data
+                    let rawString = data.toString()
+                    if (! long)
+                        rawString = rawString.length >= longStringLength
+                            ? rawString.substring(0, longStringLength - 1) + '...' : rawString
+                    let quotedString = rawString
+                        .replace('\\', '\\\\')
+                        .replace('\n', '\\n')
+                        .replace('`', '\\`')
+                    if (simpleTypes.indexOf(type) >= 0)
+                        return type == 'string' ? `\`${quotedString}\`` : `${rawString}`;
+                    else
+                        return `/*${type}*/ ${rawString}`;
                 },
-                echoSingle(data) {
-                    this.output += data
+                stringifyData(data, withPrototype = false, long = false) {
+                    let type = typeof data
+                    if (type == 'object') {
+                        if (data == null)
+                            return this.stringifyDataSimply(data, long)
+
+                        let ret = ''
+                        let isArray = Array.isArray(data)
+                        ret += isArray ? '[' : '{'
+                        
+                        let doit = (o, k, v, isPrototype = false) => {
+                            let v = o[k]
+                            let prefix = isPrototype ? `/*prototype*/ ` : ''
+                            k = this.stringifyDataSimply(k, long)
+                            v = this.stringifyData(v, withPrototype, long)
+                            ret += prefix + `${k}: ${v},`
+                        }
+                        if (withPrototype && data.__proto__) {
+                            Reflect.ownKeys(data.__proto__).forEach((v, i) => doit(data, i, v, true))
+                        }
+                        Reflect.ownKeys(data).forEach((v, i) => doit(data, i, v))
+                        ret = ret.substring(0, ret.length - 1 - 1)
+
+                        ret += isArray ? ']' : '}'
+                        return ret
+                    } else {
+                        return this.stringifyDataSimply(data, long)
+                    }
+                },
+                echoOps: {
+                    W: 1 << 1,
+                    P: 1 << 2,
+                    L: 1 << 3
+                },
+                echo(data, op = this.echoOps.W) {
+                    let wrap = op & this.echoOps.W,
+                        withPrototype = op & this.echoOps.P
+                        long = op & this.echoOps.L
+                    this.output += this.stringifyData(data, withPrototype, long) + (wrap ? '\n' : '')
                     this.displayPage = 1
                     this.pointer2 = this.output.length
                 },
@@ -319,7 +367,7 @@ Page({
                 go() {
                     try {
                         (new Function('$t', `
-                            const { echo, echoSingle, clearEcho, input, pinyin, cn } = $t
+                            const { echo, echoOps, clearEcho, input, pinyin, cn } = $t
                             try {
                                 ${this.code}
                             } catch (ex) {

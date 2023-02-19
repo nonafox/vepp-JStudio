@@ -9,7 +9,7 @@ There are 2 modes for displayer: code mode and output mode. You can switch it by
 
 Especially, there is a pointer on the displayer, you can move by specific keys in keyboard (see below) it to view different part of the display code or output: just like rolling your eyeboll!
 
-By the way, the way to output is a bit different: you need to use the built-in function `echo(data)` to output and `clearEcho()` to clear it. What's more, there is a function to accept user's input: `input((data) => { ... })`.
+By the way, the way to output is a bit different: you need to use the built-in function `echo(data, flags = echoOps.W)` to output and `clearEcho()` to clear it. What's more, there is a function to accept user's input: `input((data) => { ... })`.
 
 For more features and details, just see the next part!
 
@@ -28,7 +28,7 @@ Here is the list of them:
 - `JL`: jump left (pointer)
 - `JR`: jump right (pointer)
 - `LU`: lower & upper (operates on the character before the pointer)
-- `CN`: chinese charactor input (operates on the pattern that like `.tan10` (`.[pinyin][index]`, matched with the [pinyin table](https://github.com/jwhgzs/vepp-jstudio/tree/master/page/pinyin.js)) and that is before the pointer)
+- `CN`: chinese charactor input (operates on the pattern that like `.tan10` (`.[pinyin][index]`, matched with the [pinyin table](https://github.com/jwhgzs/vepp-jstudio/blob/master/page/pinyin.js)) and that is before the pointer)
 - `OP`: switch or input an operator (operates on the character before the pointer)
 - `SV`: save
 - `SY`: sync (from saved)
@@ -44,15 +44,13 @@ Here is the list of them:
 
 ### Abbr keys
 - `EC`: `echo()`
+- `EO`: `echoOps.`
 - `CE`: `clearEcho()`
-- `RO`: `Reflect.ownKeys()`
-- `OK`: `Object.keys()`
 
 # Built-in APIs
 There is the list of built-in APIs in the JStudio runtime environment:
 
-- `echo(data)`: display the data on the displayer (with wrap)
-- `echoSingle(data)`: display the data on the displayer (without wrap)
+- `echo(data, flags = echoOps.W)`: display the data on the displayer (values of enum `echoOps`: `W` (stands for 'add Wrap'), `P` (stands for 'with Prototype'), `L` (stands for 'support Long string'))
 - `clearEcho()`: clear the displayer
 - `input((data) => { ... })`: accept the data which user inputs
 - `cn(pinyin)`: query the pinyin table according to the specific pinyin
