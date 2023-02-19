@@ -22,6 +22,7 @@ Here is the list of them:
 - `PP`: previous page, only for keyboard
 - `NP`: next page, only for keyboard
 - `BP`: backspace
+- `B2`: long backspace
 - `PL`: pointer left
 - `PR`: pointer right
 - `JL`: jump left (pointer)
@@ -31,6 +32,7 @@ Here is the list of them:
 - `OP`: switch or input a operator (operates on the character before the pointer)
 - `SV`: save
 - `SY`: sync (from saved)
+- `C2`: clear outputs
 - `GO`: go (running)
 
 ### Escape keys
