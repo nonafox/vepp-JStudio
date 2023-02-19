@@ -29,7 +29,7 @@ Here is the list of them:
 - `JR`: jump right (pointer)
 - `LU`: lower & upper (operates on the character before the pointer)
 - `CN`: chinese charactor input (operates on the pattern that like `.tan10` (`.[pinyin][index]`, matched with the [pinyin table](https://github.com/jwhgzs/vepp-jstudio/tree/master/page/pinyin.js)) and that is before the pointer)
-- `OP`: switch or input a operator (operates on the character before the pointer)
+- `OP`: switch or input an operator (operates on the character before the pointer)
 - `SV`: save
 - `SY`: sync (from saved)
 - `C2`: clear outputs
