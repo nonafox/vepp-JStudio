@@ -160,8 +160,9 @@ Page({
                         .replace('`', '\\`')
                     if (data == null) {
                         return rawString
-                    }
-                    else if (simpleTypes.indexOf(type) >= 0) {
+                    } else if (typeof data == 'number') {
+                        return + data.toFixed(14)
+                    } else if (simpleTypes.indexOf(type) >= 0) {
                         return type == 'string' ? `\`${quotedString}\`` : `${rawString}`
                     } else {
                         if (! echoFunc && type == 'function')
@@ -220,7 +221,7 @@ Page({
                         this.inputPos = 0
                 },
                 input(callback = (data) => {}) {
-                    this.displayPage = ! this.displayPage
+                    this.displayPage = 1
                     this.inputPos = this.output.length;
                     let tmp = () => {
                         tt.unwatch('inputOK', tmp)
