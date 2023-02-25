@@ -1,7 +1,7 @@
 {
   "name": "vepp-jstudio",
   "type": "module",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "vepp": "latest"
+    "vepp": "^0.7.0"
   },
   "devDependencies": {
     "@zeppos/device-types": "^1.0.0"
