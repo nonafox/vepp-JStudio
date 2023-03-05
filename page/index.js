@@ -161,7 +161,7 @@ Page({
                     if (data == null) {
                         return rawString
                     } else if (typeof data == 'number') {
-                        return + data.toFixed(14)
+                        return + data.toFixed(9)
                     } else if (simpleTypes.indexOf(type) >= 0) {
                         return type == 'string' ? `\`${quotedString}\`` : `${rawString}`
                     } else {
