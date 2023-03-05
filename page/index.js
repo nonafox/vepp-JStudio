@@ -83,7 +83,7 @@ Page({
                     '0 1 2 3 4 5 6 7 8 9 . OP'.split(' '),
                     '+ - * / % > < = & | BS `'.split(' '),
                     'NL ? : ! ~ ^ $ _ @ # LU CN'.split(' '),
-                    'NL EC EO CE C2 JL JR WP B2 SV SY GO'.split(' ')
+                    'RO EC EO CE C2 JL JR WP B2 SV SY GO'.split(' ')
                 ],
                 dict: {
                     'WS': ' ',
@@ -107,7 +107,8 @@ Page({
                     'B2': 2023,
                     'EC': 'echo()',
                     'EO': 'echoOps.',
-                    'CE': 'clearEcho()'
+                    'CE': 'clearEcho()',
+                    'RK': 'Reflect.ownKeys()'
                 },
                 a: '', b: '', c: '', d: '', e: '', f: '',
                 g: '', h: '', i: '', j: '', k: '', l: '',

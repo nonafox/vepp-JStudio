@@ -46,6 +46,7 @@ Here is the list of them:
 - `EC`: `echo()`
 - `EO`: `echoOps.`
 - `CE`: `clearEcho()`
+- `RO`: `Reflect.ownKeys()`
 
 # Built-in APIs
 There is the list of built-in APIs in the JStudio runtime environment:

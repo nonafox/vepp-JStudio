@@ -42,6 +42,7 @@ JStudio中有很多特殊键，都分布在键盘的各个页面上。这有所�
 - `EC`: `echo()`
 - `EO`: `echoOps.`
 - `CE`: `clearEcho()`
+- `RO`: `Reflect.ownKeys()`
 
 # 内置API
 这是JStudio运行时环境中内置的API列表：
