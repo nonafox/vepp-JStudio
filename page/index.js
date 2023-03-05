@@ -108,7 +108,7 @@ Page({
                     'EC': 'echo()',
                     'EO': 'echoOps.',
                     'CE': 'clearEcho()',
-                    'RK': 'Reflect.ownKeys()'
+                    'RO': 'Reflect.ownKeys()'
                 },
                 a: '', b: '', c: '', d: '', e: '', f: '',
                 g: '', h: '', i: '', j: '', k: '', l: '',
